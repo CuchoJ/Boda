@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meliton &amp; Cristina — Comparte tus fotos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ivory:#FAF6F0;
+    --ivory-2:#F1E9DF;
+    --rose:#C48B9F;
+    --rose-deep:#A9677D;
+    --sage:#8A9A7B;
+    --charcoal:#332E2B;
+    --gold:#B8935A;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--ivory);
+    color:var(--charcoal);
+    font-family:'Jost', sans-serif;
+    font-weight:300;
+    line-height:1.6;
+  }
+  h1,h2,h3{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:500;
+    letter-spacing:.01em;
+  }
+  a{color:inherit;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:88vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:6vh 6vw;
+    position:relative;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(196,139,159,.14), transparent 45%),
+      radial-gradient(circle at 80% 75%, rgba(138,154,123,.14), transparent 45%),
+      var(--ivory);
+  }
+  .hero .eyebrow{
+    font-size:.95rem;
+    letter-spacing:.14em;
+    color:var(--rose-deep);
+    margin-bottom:1.4rem;
+    opacity:0;
+    animation:rise .9s ease forwards .1s;
+  }
+  .hero h1{
+    font-size:clamp(2.6rem, 7vw, 5.2rem);
+    font-style:italic;
+    color:var(--charcoal);
+    opacity:0;
+    animation:rise 1s ease forwards .3s;
+  }
+  .hero .amp{
+    display:inline-block;
+    color:var(--rose);
+    font-size:.7em;
+    margin:0 .15em;
+    font-style:normal;
+  }
+  .hero .date{
+    margin-top:1.6rem;
+    font-size:1.05rem;
+    color:#665f59;
+    opacity:0;
+    animation:rise 1s ease forwards .55s;
+  }
+  .hero .divider{
+    width:64px;
+    height:1px;
+    background:var(--gold);
+    margin:2rem auto;
+    opacity:0;
+    animation:rise 1s ease forwards .75s;
+  }
+  .hero p.lead{
+    max-width:480px;
+    font-size:1.05rem;
+    color:#544e49;
+    opacity:0;
+    animation:rise 1s ease forwards .9s;
+  }
+  @keyframes rise{
+    from{opacity:0; transform:translateY(14px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+
+  /* ---------- BOTÓN SUBIR ---------- */
+  .upload-trigger{
+    margin-top:2.2rem;
+    background:var(--rose-deep);
+    color:#fff;
+    border:none;
+    padding:.85rem 2.2rem;
+    font-family:'Jost', sans-serif;
+    font-size:.95rem;
+    letter-spacing:.03em;
+    border-radius:3px;
+    cursor:pointer;
+    transition:background .2s;
+    opacity:0;
+    animation:rise 1s ease forwards 1.05s;
+  }
+  .upload-trigger:hover{ background:var(--charcoal); }
+
+  .upload-fab{
+    position:fixed;
+    right:1.4rem;
+    bottom:1.4rem;
+    background:var(--rose-deep);
+    color:#fff;
+    border:none;
+    padding:.8rem 1.5rem;
+    font-family:'Jost', sans-serif;
+    font-size:.9rem;
+    border-radius:30px;
+    box-shadow:0 6px 18px rgba(51,46,43,.22);
+    cursor:pointer;
+    z-index:20;
+    transition:background .2s, transform .2s;
+  }
+  .upload-fab:hover{ background:var(--charcoal); transform:translateY(-1px); }
+
+  /* ---------- MODAL ---------- */
+  .modal-overlay{
+    position:fixed; inset:0;
+    background:rgba(51,46,43,.5);
+    display:none;
+    align-items:flex-start;
+    justify-content:center;
+    padding:6vh 5vw;
+    overflow-y:auto;
+    z-index:50;
+  }
+  .modal-overlay.open{ display:flex; }
+  .modal{
+    background:var(--ivory);
+    border-radius:6px;
+    max-width:520px;
+    width:100%;
+    padding:2.6rem 2rem 2.4rem;
+    position:relative;
+    animation:rise .35s ease forwards;
+  }
+  .modal-close{
+    position:absolute;
+    top:1rem; right:1rem;
+    background:none;
+    border:none;
+    font-size:1.3rem;
+    color:#8a8177;
+    cursor:pointer;
+    line-height:1;
+    padding:.3rem;
+  }
+  .modal-close:hover{ color:var(--charcoal); }
+  .modal .section-title{ margin-top:0; }
+
+  /* ---------- SECTIONS ---------- */
+  section{
+    padding:5rem 6vw;
+    max-width:960px;
+    margin:0 auto;
+  }
+  .section-title{
+    text-align:center;
+    margin-bottom:.6rem;
+    font-size:clamp(1.8rem,4vw,2.6rem);
+  }
+  .section-sub{
+    text-align:center;
+    color:#6b6459;
+    max-width:440px;
+    margin:0 auto 2.8rem;
+    font-size:.98rem;
+  }
+
+  /* ---------- UPLOAD ---------- */
+  .upload-zone{
+    border:1.5px dashed var(--rose);
+    border-radius:4px;
+    background:#fff;
+    padding:3rem 2rem;
+    text-align:center;
+    cursor:pointer;
+    transition:border-color .25s, background .25s;
+  }
+  .upload-zone.drag{
+    border-color:var(--sage);
+    background:var(--ivory-2);
+  }
+  .upload-zone svg{ width:34px; height:34px; stroke:var(--rose-deep); margin-bottom:1rem;}
+  .upload-zone .label{ font-family:'Cormorant Garamond', serif; font-size:1.4rem; }
+  .upload-zone .hint{ font-size:.85rem; color:#8a8177; margin-top:.4rem; }
+  #file-input{ display:none; }
+
+  .name-field{
+    max-width:340px;
+    margin:1.6rem auto 0;
+  }
+  .name-field input{
+    width:100%;
+    padding:.7rem .9rem;
+    border:1px solid #ddd3c6;
+    border-radius:3px;
+    font-family:'Jost', sans-serif;
+    font-size:.95rem;
+    background:#fff;
+  }
+  .name-field input:focus{ outline:2px solid var(--sage); outline-offset:1px; }
+  .name-field label{
+    display:block;
+    font-size:.8rem;
+    color:#8a8177;
+    margin-bottom:.4rem;
+  }
+
+  .queue{
+    display:flex;
+    flex-wrap:wrap;
+    gap:.6rem;
+    margin-top:1.6rem;
+    justify-content:center;
+  }
+  .queue-item{
+    position:relative;
+    width:78px; height:78px;
+    border-radius:3px;
+    overflow:hidden;
+    background:#eee;
+  }
+  .queue-item img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .queue-item .status{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(51,46,43,.55);
+    color:#fff; font-size:.7rem;
+  }
+  .queue-item .status.done{ background:rgba(138,154,123,.75); }
+  .queue-item .status.error{ background:rgba(169,103,125,.85); }
+
+  .send-btn{
+    display:block;
+    margin:2rem auto 0;
+    background:var(--rose-deep);
+    color:#fff;
+    border:none;
+    padding:.85rem 2.4rem;
+    font-family:'Jost', sans-serif;
+    font-size:.95rem;
+    letter-spacing:.03em;
+    border-radius:3px;
+    cursor:pointer;
+    transition:background .2s, transform .2s;
+  }
+  .send-btn:hover{ background:var(--charcoal); }
+  .send-btn:disabled{ background:#cfc6ba; cursor:not-allowed; }
+
+  .status-msg{
+    text-align:center;
+    margin-top:1.2rem;
+    font-size:.9rem;
+    min-height:1.2em;
+  }
+  .status-msg.ok{ color:var(--sage); }
+  .status-msg.err{ color:var(--rose-deep); }
+
+  /* ---------- GALLERY ---------- */
+  .gallery-wrap{ background:var(--ivory-2); }
+  .gallery{
+    column-count:2;
+    column-gap:.7rem;
+  }
+  @media(min-width:640px){ .gallery{ column-count:3; } }
+  @media(min-width:960px){ .gallery{ column-count:4; } }
+  .gallery img{
+    width:100%;
+    display:block;
+    margin-bottom:.7rem;
+    border-radius:3px;
+    break-inside:avoid;
+    background:#e4dcd0;
+  }
+  .empty-state{
+    text-align:center;
+    color:#8a8177;
+    font-size:.95rem;
+    padding:2rem 0;
+  }
+
+  footer{
+    text-align:center;
+    padding:3rem 6vw 4rem;
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    color:#a89d8d;
+    font-size:1.1rem;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .hero *{ animation:none !important; opacity:1 !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="eyebrow">NOS CASAMOS</div>
+  <h1>Meliton <span class="amp">&amp;</span> Cristina</h1>
+  <div class="date">26 de septiembre de 2026</div>
+  <div class="divider"></div>
+  <p class="lead">Ayúdanos a guardar cada momento del día. Sube las fotos que tomes y aparecerán aquí, junto a las de todos.</p>
+  <button class="upload-trigger" id="open-modal-hero">Subir fotos</button>
+</div>
+
+<div class="gallery-wrap">
+  <section>
+    <h2 class="section-title">Momentos del día</h2>
+    <p class="section-sub">Actualiza la página para ver las fotos más recientes.</p>
+    <div class="gallery" id="gallery">
+      <div class="empty-state" id="empty-state">Todavía no hay fotos — ¡sé el primero en subir una!</div>
+    </div>
+  </section>
+</div>
+
+<footer>Gracias por acompañarnos</footer>
+
+<button class="upload-fab" id="open-modal-fab">+ Subir fotos</button>
+
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <button class="modal-close" id="modal-close" aria-label="Cerrar">✕</button>
+    <h2 class="section-title">Sube tus fotos</h2>
+    <p class="section-sub">Sin necesidad de crear cuenta ni iniciar sesión. Puedes elegir varias a la vez.</p>
+
+    <div class="name-field">
+      <label for="uploader-name">Tu nombre (opcional)</label>
+      <input type="text" id="uploader-name" placeholder="¿Quién sube estas fotos?">
+    </div>
+
+    <div class="upload-zone" id="drop-zone">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 002 2h12a2 2 0 002-2v-3"/></svg>
+      <div class="label">Arrastra tus fotos aquí</div>
+      <div class="hint">o toca para elegir desde tu galería</div>
+      <input type="file" id="file-input" accept="image/*" multiple>
+    </div>
+
+    <div class="queue" id="queue"></div>
+    <button class="send-btn" id="send-btn" disabled>Enviar fotos</button>
+    <div class="status-msg" id="status-msg"></div>
+  </div>
+</div>
+
+<script>
+// https://script.google.com/macros/s/AKfycbzKB9wPlcN0ydEjrMLa6x0nf4NMKQ_B1TIOCsyf9uoVXCigJdoraXQOMsnKN9NSQPBgIw/exec
+const APPS_SCRIPT_URL = "PON_AQUI_TU_URL_DE_APPS_SCRIPT";
+
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+const queueEl = document.getElementById('queue');
+const sendBtn = document.getElementById('send-btn');
+const statusMsg = document.getElementById('status-msg');
+const galleryEl = document.getElementById('gallery');
+const emptyState = document.getElementById('empty-state');
+
+let queue = []; // {file, el}
+
+const modalOverlay = document.getElementById('modal-overlay');
+function openModal(){ modalOverlay.classList.add('open'); }
+function closeModal(){ modalOverlay.classList.remove('open'); }
+document.getElementById('open-modal-hero').addEventListener('click', openModal);
+document.getElementById('open-modal-fab').addEventListener('click', openModal);
+document.getElementById('modal-close').addEventListener('click', closeModal);
+modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('drag');
+  addFiles(e.dataTransfer.files);
+});
+fileInput.addEventListener('change', () => addFiles(fileInput.files));
+
+function addFiles(fileList){
+  Array.from(fileList).forEach(file => {
+    if (!file.type.startsWith('image/')) return;
+    const item = document.createElement('div');
+    item.className = 'queue-item';
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(file);
+    item.appendChild(img);
+    queueEl.appendChild(item);
+    queue.push({ file, el: item });
+  });
+  sendBtn.disabled = queue.length === 0;
+}
+
+sendBtn.addEventListener('click', async () => {
+  if (queue.length === 0) return;
+  sendBtn.disabled = true;
+  statusMsg.textContent = 'Subiendo fotos…';
+  statusMsg.className = 'status-msg';
+
+  const name = document.getElementById('uploader-name').value.trim();
+  let okCount = 0, errCount = 0;
+
+  for (const item of queue) {
+    try {
+      const base64 = await fileToBase64(item.file);
+      const form = new FormData();
+      form.append('data', base64);
+      form.append('filename', (name ? name.replace(/[^a-z0-9]+/gi,'_') + '_' : '') + Date.now() + '_' + item.file.name);
+      form.append('contentType', item.file.type);
+
+      const res = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: form });
+      const json = await res.json();
+      markStatus(item.el, json.success);
+      json.success ? okCount++ : errCount++;
+    } catch (err) {
+      markStatus(item.el, false);
+      errCount++;
+    }
+  }
+
+  if (errCount === 0) {
+    statusMsg.textContent = '¡Listo! ' + okCount + ' foto(s) subidas. Gracias por compartir.';
+    statusMsg.className = 'status-msg ok';
+  } else {
+    statusMsg.textContent = okCount + ' subidas, ' + errCount + ' fallaron. Intenta de nuevo con esas.';
+    statusMsg.className = 'status-msg err';
+  }
+
+  queue = queue.filter(i => !i.el.classList.contains('sent-ok'));
+  sendBtn.disabled = true;
+  loadGallery();
+});
+
+function markStatus(el, success){
+  const badge = document.createElement('div');
+  badge.className = 'status ' + (success ? 'done' : 'error');
+  badge.textContent = success ? '✓' : '✕';
+  el.appendChild(badge);
+  if (success) el.classList.add('sent-ok');
+}
+
+function fileToBase64(file){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function loadGallery(){
+  if (APPS_SCRIPT_URL.indexOf('PON_AQUI') === 0) return;
+  try {
+    const res = await fetch(APPS_SCRIPT_URL);
+    const json = await res.json();
+    if (!json.images || json.images.length === 0) return;
+    emptyState.style.display = 'none';
+    galleryEl.innerHTML = '';
+    json.images.forEach(img => {
+      const el = document.createElement('img');
+      el.src = img.url;
+      el.loading = 'lazy';
+      el.alt = img.name || 'Foto de la boda';
+      galleryEl.appendChild(el);
+    });
+  } catch (err) {
+    // Si falla, se mantiene el estado vacío
+  }
+}
+
+loadGallery();
+</script>
+</body>
+</html>
