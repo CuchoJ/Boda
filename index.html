@@ -239,7 +239,15 @@
     overflow:hidden;
     background:#eee;
   }
-  .queue-item img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .queue-item img, .queue-item video{ width:100%; height:100%; object-fit:cover; display:block; }
+  .queue-item .video-tag{
+    position:absolute; bottom:4px; right:4px;
+    background:rgba(51,46,43,.7);
+    color:#fff;
+    font-size:.65rem;
+    padding:.1rem .35rem;
+    border-radius:2px;
+  }
   .queue-item .status{
     position:absolute; inset:0;
     display:flex; align-items:center; justify-content:center;
@@ -291,6 +299,16 @@
     break-inside:avoid;
     background:#e4dcd0;
   }
+  .gallery .video-embed{
+    width:100%;
+    aspect-ratio:16/9;
+    display:block;
+    margin-bottom:.7rem;
+    border-radius:3px;
+    break-inside:avoid;
+    background:#000;
+    border:none;
+  }
   .empty-state{
     text-align:center;
     color:#8a8177;
@@ -341,7 +359,7 @@
   <div class="modal">
     <button class="modal-close" id="modal-close" aria-label="Cerrar">✕</button>
     <h2 class="section-title">Sube tus fotos</h2>
-    <p class="section-sub">Sin necesidad de crear cuenta ni iniciar sesión. Puedes elegir varias a la vez.</p>
+    <p class="section-sub">Sin necesidad de crear cuenta ni iniciar sesión. Puedes elegir varias fotos o videos a la vez (máx. 50MB c/u).</p>
 
     <div class="name-field">
       <label for="uploader-name">Tu nombre (opcional)</label>
@@ -350,9 +368,9 @@
 
     <div class="upload-zone" id="drop-zone">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 002 2h12a2 2 0 002-2v-3"/></svg>
-      <div class="label">Arrastra tus fotos aquí</div>
+      <div class="label">Arrastra tus fotos o videos aquí</div>
       <div class="hint">o toca para elegir desde tu galería</div>
-      <input type="file" id="file-input" accept="image/*" multiple>
+      <input type="file" id="file-input" accept="image/*,video/*" multiple>
     </div>
 
     <div class="queue" id="queue"></div>
@@ -362,8 +380,8 @@
 </div>
 
 <script>
-// https://script.google.com/macros/s/AKfycbzKB9wPlcN0ydEjrMLa6x0nf4NMKQ_B1TIOCsyf9uoVXCigJdoraXQOMsnKN9NSQPBgIw/exec
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzKB9wPlcN0ydEjrMLa6x0nf4NMKQ_B1TIOCsyf9uoVXCigJdoraXQOMsnKN9NSQPBgIw/exec";
+// Pega aquí la URL de tu implementación de Apps Script (termina en /exec)
+const APPS_SCRIPT_URL = "PON_AQUI_TU_URL_DE_APPS_SCRIPT";
 
 const dropZone = document.getElementById('drop-zone');
 const fileInput = document.getElementById('file-input');
@@ -395,13 +413,32 @@ dropZone.addEventListener('drop', e => {
 fileInput.addEventListener('change', () => addFiles(fileInput.files));
 
 function addFiles(fileList){
+  const MAX_SIZE = 50 * 1024 * 1024; // 50MB por archivo
   Array.from(fileList).forEach(file => {
-    if (!file.type.startsWith('image/')) return;
+    const isImage = file.type.startsWith('image/');
+    const isVideo = file.type.startsWith('video/');
+    if (!isImage && !isVideo) return;
+    if (file.size > MAX_SIZE) {
+      statusMsg.textContent = '"' + file.name + '" pesa demasiado (máx. 50MB). Se omitió.';
+      statusMsg.className = 'status-msg err';
+      return;
+    }
     const item = document.createElement('div');
     item.className = 'queue-item';
-    const img = document.createElement('img');
-    img.src = URL.createObjectURL(file);
-    item.appendChild(img);
+    if (isImage) {
+      const img = document.createElement('img');
+      img.src = URL.createObjectURL(file);
+      item.appendChild(img);
+    } else {
+      const video = document.createElement('video');
+      video.src = URL.createObjectURL(file);
+      video.muted = true;
+      item.appendChild(video);
+      const badge = document.createElement('div');
+      badge.className = 'video-tag';
+      badge.textContent = '▶';
+      item.appendChild(badge);
+    }
     queueEl.appendChild(item);
     queue.push({ file, el: item });
   });
@@ -474,9 +511,19 @@ async function loadGallery(){
     emptyState.style.display = 'none';
     galleryEl.innerHTML = '';
     json.images.forEach(img => {
-      const el = document.createElement('img');
-      el.src = img.url;
-      el.loading = 'lazy';
+      const isVideo = (img.mimeType || '').indexOf('video/') === 0;
+      let el;
+      if (isVideo) {
+        el = document.createElement('iframe');
+        el.className = 'video-embed';
+        el.src = 'https://drive.google.com/file/d/' + img.id + '/preview';
+        el.setAttribute('allow', 'autoplay');
+        el.setAttribute('frameborder', '0');
+      } else {
+        el = document.createElement('img');
+        el.src = img.url;
+        el.loading = 'lazy';
+      }
       el.alt = img.name || 'Foto de la boda';
       galleryEl.appendChild(el);
     });
