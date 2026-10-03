@@ -502,10 +502,11 @@ sendBtn.addEventListener('click', async () => {
       await shareWithOwner(fileId);
       const json = await finalizeUpload(fileId);
       markStatus(item.el, json.success);
-      json.success ? okCount++ : errCount++;
+      if (json.success) { okCount++; } else { errCount++; console.error('Error al finalizar:', json.error); }
     } catch (err) {
       markStatus(item.el, false);
       errCount++;
+      console.error('Error al subir:', err);
     }
   }
 
