@@ -502,7 +502,7 @@ sendBtn.addEventListener('click', async () => {
       try { await shareWithOwner(fileId); } catch (shareErr) { console.warn('No se compartió (puede que ya seas el dueño):', shareErr); }
       const json = await finalizeUpload(fileId);
       markStatus(item.el, json.success);
-      if (json.success) { okCount++; } else { errCount++; console.error('Error al finalizar:', json.error); }
+      if (json.success) { okCount++; if (json.warning) console.warn('Aviso al finalizar:', json.warning); } else { errCount++; console.error('Error al finalizar:', json.error); }
     } catch (err) {
       markStatus(item.el, false);
       errCount++;
@@ -531,7 +531,7 @@ async function uploadToDriveDirect(file, filename){
       'Authorization': 'Bearer ' + accessToken,
       'Content-Type': 'application/json; charset=UTF-8'
     },
-    body: JSON.stringify({ name: filename, mimeType: file.type || 'application/octet-stream' })
+    body: JSON.stringify({ name: filename, mimeType: file.type || 'application/octet-stream', properties: { boda: 'meliton-cristina' } })
   });
   if (!initRes.ok) throw new Error('No se pudo iniciar la subida a Drive');
   const uploadUrl = initRes.headers.get('Location');
