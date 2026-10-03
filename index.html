@@ -395,7 +395,7 @@ const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzKB9wPlcN0ydEj
 // Pega aquí el Client ID que generes en Google Cloud Console
 const GOOGLE_CLIENT_ID = "798805555246-am7i14maaa468835agqj297gffpbe1cm.apps.googleusercontent.com";
 // El correo de Gmail dueño de la carpeta de Drive (el mismo con el que creaste el Apps Script)
-const OWNER_EMAIL = "lizbethccoytotapia@gmail.com";
+const OWNER_EMAIL = " lizbethccoytotapia@gmail.com";
 const DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.file";
 const MAX_SIZE = 1024 * 1024 * 1024; // 1GB por archivo (ajustable)
 
@@ -548,7 +548,7 @@ async function uploadToDriveDirect(file, filename){
 
 // Le da acceso al dueño de la boda sobre el archivo recién creado en Drive del invitado
 async function shareWithOwner(fileId){
-  await fetch('https://www.googleapis.com/drive/v3/files/' + fileId + '/permissions', {
+  const res = await fetch('https://www.googleapis.com/drive/v3/files/' + fileId + '/permissions', {
     method: 'POST',
     headers: {
       'Authorization': 'Bearer ' + accessToken,
@@ -556,6 +556,10 @@ async function shareWithOwner(fileId){
     },
     body: JSON.stringify({ role: 'writer', type: 'user', emailAddress: OWNER_EMAIL })
   });
+  if (!res.ok) {
+    const errBody = await res.text();
+    throw new Error('No se pudo compartir con el dueño (' + OWNER_EMAIL + '): ' + errBody);
+  }
 }
 
 // Pide a Apps Script (con la autoridad del dueño) mover el archivo a la carpeta de la boda y hacerlo visible
