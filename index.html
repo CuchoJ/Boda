@@ -554,7 +554,7 @@ async function shareWithOwner(fileId){
       'Authorization': 'Bearer ' + accessToken,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ role: 'writer', type: 'user', emailAddress: OWNER_EMAIL })
+    body: JSON.stringify({ role: 'writer', type: 'user', emailAddress: OWNER_EMAIL, pendingOwner: true })
   });
   if (!res.ok) {
     const errBody = await res.text();
