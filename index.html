@@ -499,7 +499,7 @@ sendBtn.addEventListener('click', async () => {
     try {
       const filename = (name ? name.replace(/[^a-z0-9]+/gi,'_') + '_' : '') + Date.now() + '_' + item.file.name;
       const fileId = await uploadToDriveDirect(item.file, filename);
-      await shareWithOwner(fileId);
+      try { await shareWithOwner(fileId); } catch (shareErr) { console.warn('No se compartió (puede que ya seas el dueño):', shareErr); }
       const json = await finalizeUpload(fileId);
       markStatus(item.el, json.success);
       if (json.success) { okCount++; } else { errCount++; console.error('Error al finalizar:', json.error); }
