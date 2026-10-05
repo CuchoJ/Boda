@@ -9,8 +9,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;1,6..96,500&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --tinta:#1d2540; --fondo:#f5f6f9; --papel:#ffffff; --fucsia:#a3195b; --oro:#c49a3a;
-    --turquesa:#1f7a7a; --linea:#dfe2ea; --suave:#5d6580;
+    --tinta:#1d2540; --fondo:#f4f5f0; --papel:#ffffff; --fucsia:#a3195b; --oro:#c49a3a;
+    --turquesa:#1f7a7a; --linea:#e0e2da; --suave:#5d6580;
   }
   *{box-sizing:border-box;margin:0}
   html{scroll-behavior:smooth}
@@ -109,6 +109,24 @@
   .lista-roles button:hover{background:var(--tinta);color:#fff}
   .previa{width:100%;max-height:34vh;object-fit:contain;background:var(--linea);border-radius:6px;margin-top:12px}
 
+  /* Final: tarjeta de agradecimiento y pétalos */
+  .final{max-width:640px;margin:64px auto 0;padding:0 6px}
+  .final .tarjeta{background:var(--papel);border:1px solid var(--oro);outline:1px solid var(--oro);outline-offset:-8px;border-radius:4px;padding:42px 30px 36px;text-align:center;box-shadow:0 14px 40px rgba(29,37,64,.1);
+    opacity:0;transform:translateY(16px);transition:opacity 1.4s ease 1.6s,transform 1.4s ease 1.6s}
+  .final.visible .tarjeta{opacity:1;transform:none}
+  .final .tejido{width:120px;height:6px;margin:0 auto 26px}
+  .final .frase{font-family:'Bodoni Moda',Georgia,serif;font-style:italic;font-size:clamp(1.25rem,4.4vw,1.65rem);line-height:1.4}
+  .final .gracias2{margin-top:20px;line-height:1.65}
+  .final .bendiga{margin-top:22px;font-family:'Bodoni Moda',Georgia,serif;font-style:italic;font-size:1.3rem;color:var(--fucsia)}
+  #petalos{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:7}
+  @media(prefers-reduced-motion:reduce){.final .tarjeta{transition:none}}
+
+  /* Música */
+  #btnMusica{position:fixed;top:12px;right:12px;width:44px;height:44px;border-radius:50%;border:0;background:var(--tinta);color:#fff;font-size:1.3rem;z-index:9;box-shadow:0 4px 14px rgba(29,37,64,.3);overflow:hidden}
+  body.admin #btnMusica{top:58px}
+  #btnMusica.off{opacity:.7}
+  #btnMusica.off::after{content:"";position:absolute;left:8px;right:8px;top:50%;height:2px;background:#fff;transform:rotate(-40deg)}
+
   /* Visor */
   #visor{position:fixed;inset:0;background:rgba(10,14,28,.94);display:none;align-items:center;justify-content:center;z-index:20}
   #visor.abierto{display:flex}
@@ -140,6 +158,15 @@
   <p class="contador" id="contador" aria-live="polite">Cargando recuerdos…</p>
   <div id="galeria"></div>
   <p class="vacio" id="vacio" hidden>Todavía no hay fotos. Sube la primera con el botón de abajo.</p>
+  <section class="final" id="final" aria-label="Agradecimiento">
+    <div class="tarjeta">
+      <div class="tejido" aria-hidden="true"></div>
+      <p class="frase">“Cada fotografía es un pedacito de este día, y cada persona que aparece en ellas forma parte de nuestra historia.”</p>
+      <p class="gracias2">Gracias por acompañarnos, por celebrar nuestra felicidad y por hacer de este momento un recuerdo aún más hermoso.</p>
+      <p class="bendiga">Que Dios los bendiga siempre. 🤍</p>
+    </div>
+  </section>
+
   <div class="pie"><button id="btnAdmin">Administrar fotos destacadas</button></div>
 </main>
 
@@ -162,6 +189,9 @@
     <ul class="cola" id="cola"></ul>
   </div>
 </div>
+
+<audio id="musica" src="musica.mp3" loop preload="auto"></audio>
+<button id="btnMusica" class="off" aria-label="Activar música" aria-pressed="false">♪</button>
 
 <!-- Bienvenida: edita el versículo y las palabras aquí -->
 <div class="fondo centro abierto" id="bienvenida" role="dialog" aria-modal="true" aria-labelledby="versiculo">
@@ -274,6 +304,7 @@ async function actualizar() {
     }
     if (nuevos.length) archivos = j.files.slice();
     primeraCarga = false;
+    setTimeout(chequearFinal, 800);
     const n = vistos.size;
     $('contador').textContent = n === 1 ? '1 recuerdo' : n + ' recuerdos';
     $('vacio').hidden = n > 0;
@@ -295,6 +326,8 @@ function abrirVisor(id) {
 }
 function mostrarVisor() {
   const f = archivos[visorIdx];
+  if (esVideo(f.type)) audio.pause();
+  else if (musicaActiva && audio.paused) audio.play().catch(() => {});
   const c = $('visorCont');
   c.innerHTML = '';
   if (esVideo(f.type)) {
@@ -310,7 +343,10 @@ function mostrarVisor() {
     c.appendChild(im);
   }
 }
-function cerrarVisor() { $('visor').classList.remove('abierto'); $('visorCont').innerHTML = ''; }
+function cerrarVisor() {
+  $('visor').classList.remove('abierto'); $('visorCont').innerHTML = '';
+  if (musicaActiva && audio.paused) audio.play().catch(() => {});
+}
 function mover(d) {
   if (!archivos.length) return;
   visorIdx = (visorIdx + d + archivos.length) % archivos.length;
@@ -379,13 +415,45 @@ async function procesar() {
 window.addEventListener('beforeunload', e => { if (subiendo || pendientes.length) { e.preventDefault(); e.returnValue = ''; } });
 
 // ====== BIENVENIDA (aparece una vez por visita) ======
+const audio = $('musica');
+let musicaActiva = false, musicaPausadaPorUsuario = false;
+
+function estadoMusica() {
+  $('btnMusica').classList.toggle('off', !musicaActiva);
+  $('btnMusica').setAttribute('aria-pressed', String(musicaActiva));
+  $('btnMusica').setAttribute('aria-label', musicaActiva ? 'Pausar música' : 'Activar música');
+}
+async function ponerMusica() {
+  try { audio.volume = 0.6; await audio.play(); musicaActiva = true; }
+  catch (e) { musicaActiva = false; }
+  estadoMusica();
+}
+$('btnMusica').onclick = () => {
+  if (musicaActiva) { audio.pause(); musicaActiva = false; musicaPausadaPorUsuario = true; estadoMusica(); }
+  else { musicaPausadaPorUsuario = false; ponerMusica(); }
+};
+
 (function () {
   const b = $('bienvenida');
   let ya = false;
   try { ya = sessionStorage.getItem('bienvenida') === '1'; } catch (e) {}
   if (ya) b.classList.remove('abierto');
+
+  // 1) Intenta sonar apenas carga la página (algunos navegadores lo permiten)
+  ponerMusica();
+
+  // 2) Si el navegador lo bloqueó, suena con el primer toque o tecla (excepto el botón de música)
+  const eventos = ['click', 'touchend', 'keydown'];
+  const primero = e => {
+    if (e.target && e.target.closest && e.target.closest('#btnMusica')) return;
+    eventos.forEach(ev => document.removeEventListener(ev, primero));
+    if (!musicaPausadaPorUsuario && !musicaActiva) ponerMusica();
+  };
+  eventos.forEach(ev => document.addEventListener(ev, primero));
   $('btnEntrar').onclick = () => {
     b.classList.remove('abierto');
+    ponerMusica(); // el toque en este botón permite que suene automáticamente
+    setTimeout(chequearFinal, 500);
     try { sessionStorage.setItem('bienvenida', '1'); } catch (e) {}
   };
 })();
@@ -478,6 +546,91 @@ async function asignar(rol, id) {
     msg.textContent = e.message || 'No se pudo guardar.';
     if (!$('panelAsignar').classList.contains('abierto')) alert(msg.textContent);
   }
+}
+
+// ====== FINAL: PÉTALOS + TARJETA ======
+let finalVisible = false, finalHecho = false;
+
+function chequearFinal() {
+  if (finalHecho || !finalVisible || primeraCarga) return;
+  if ($('bienvenida').classList.contains('abierto')) return;
+  finalHecho = true;
+  $('final').classList.add('visible');
+  lluviaPetalos();
+}
+
+if ('IntersectionObserver' in window) {
+  new IntersectionObserver(es => {
+    finalVisible = es[0].isIntersecting;
+    chequearFinal();
+  }, { threshold: 0.3 }).observe($('final'));
+} else {
+  finalVisible = true;
+}
+
+function lluviaPetalos() {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const c = document.createElement('canvas');
+  c.id = 'petalos';
+  document.body.appendChild(c);
+  const ctx = c.getContext('2d');
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const W = window.innerWidth, H = window.innerHeight;
+  c.width = W * dpr; c.height = H * dpr;
+  ctx.scale(dpr, dpr);
+
+  const colores = [
+    { c: '#c49a3a', borde: false }, { c: '#e3c77a', borde: false }, { c: '#ffffff', borde: true },
+    { c: '#f6e3ea', borde: true }, { c: '#d9689b', borde: false }, { c: '#8fc9c4', borde: false }
+  ];
+  const n = W < 600 ? 38 : 64;
+  const ps = [];
+  for (let i = 0; i < n; i++) {
+    const col = colores[Math.floor(Math.random() * colores.length)];
+    ps.push({
+      x0: Math.random() * W, retraso: Math.random() * 2.6,
+      vy: 45 + Math.random() * 50, amp: 18 + Math.random() * 34, freq: 0.6 + Math.random() * 0.8,
+      fase: Math.random() * 6.28, tam: 6 + Math.random() * 6, rot: Math.random() * 6.28,
+      vr: (Math.random() - 0.5) * 1.6, giro: 1 + Math.random() * 1.6, col: col.c, borde: col.borde
+    });
+  }
+
+  function petalo(s) {
+    ctx.beginPath();
+    ctx.moveTo(0, -s);
+    ctx.bezierCurveTo(s * 0.9, -s * 0.4, s * 0.7, s * 0.8, 0, s);
+    ctx.bezierCurveTo(-s * 0.7, s * 0.8, -s * 0.9, -s * 0.4, 0, -s);
+    ctx.closePath();
+  }
+
+  let t0 = null;
+  function cuadro(ts) {
+    if (t0 === null) t0 = ts;
+    const t = (ts - t0) / 1000;
+    ctx.clearRect(0, 0, W, H);
+    let vivos = 0;
+    for (const p of ps) {
+      const edad = t - p.retraso;
+      if (edad < 0) { vivos++; continue; }
+      const y = -20 + p.vy * edad;
+      if (y > H + 30) continue;
+      vivos++;
+      const x = p.x0 + Math.sin(edad * p.freq + p.fase) * p.amp;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(p.rot + edad * p.vr);
+      ctx.scale(Math.max(0.28, Math.abs(Math.cos(edad * p.giro + p.fase))), 1);
+      ctx.globalAlpha = 0.92;
+      ctx.fillStyle = p.col;
+      petalo(p.tam);
+      ctx.fill();
+      if (p.borde) { ctx.strokeStyle = 'rgba(196,154,58,.65)'; ctx.lineWidth = 0.8; ctx.stroke(); }
+      ctx.restore();
+    }
+    if (vivos > 0 && t < 16) requestAnimationFrame(cuadro);
+    else c.remove();
+  }
+  requestAnimationFrame(cuadro);
 }
 
 // ====== SUBIDA A DRIVE (por trozos) ======
