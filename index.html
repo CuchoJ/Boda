@@ -63,6 +63,52 @@
   .estado{color:var(--suave);white-space:nowrap}
   .error .estado{color:var(--fucsia)}
 
+  /* Bienvenida */
+  .fondo.centro{align-items:center;padding:16px}
+  #bienvenida{z-index:30;background:rgba(29,37,64,.78)}
+  .carta{background:var(--papel);max-width:460px;width:100%;border-radius:10px;padding:0 0 30px;text-align:center;overflow:hidden;animation:aparece .7s ease-out}
+  @keyframes aparece{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .carta .tejido{margin:0 0 30px;max-width:none;height:12px;border-radius:0}
+  .carta{max-height:calc(100vh - 32px);overflow-y:auto}
+  .bendicion{padding:0 26px}
+  .bendicion p{font-size:1rem;line-height:1.65;color:var(--tinta)}
+  .bendicion p + p{margin-top:12px}
+  .versiculo{font-family:'Bodoni Moda',Georgia,serif;font-style:italic;font-size:clamp(1.3rem,5vw,1.7rem);line-height:1.35;padding:0 28px;margin-top:24px}
+  .cita{margin-top:12px;color:var(--fucsia);font-weight:600}
+  .gracias{margin:22px auto 0;padding:0 28px;color:var(--suave)}
+  .entrar{margin-top:26px;background:var(--tinta);color:#fff;border:0;border-radius:99px;padding:13px 28px;font-weight:600}
+
+  /* Recuadros destacados */
+  .destacados{max-width:1000px;margin:6px auto 30px;padding:0 14px;display:grid;gap:14px;align-items:end;
+    grid-template-columns:1fr 1.45fr 1fr;grid-template-areas:"hijos esposos padrinos"}
+  .marco{margin:0;position:relative}
+  .marco.hijos{grid-area:hijos}.marco.esposos{grid-area:esposos}.marco.padrinos{grid-area:padrinos}
+  .marco .foto{background:var(--papel);padding:8px;border:2px solid var(--oro);border-radius:3px;box-shadow:0 10px 26px rgba(29,37,64,.14);aspect-ratio:3/4;display:flex;position:relative}
+  .marco.esposos .foto{border-width:4px;padding:10px;box-shadow:0 14px 34px rgba(163,25,91,.2)}
+  .marco .foto img{width:100%;height:100%;object-fit:cover;cursor:pointer;display:block}
+  .marco .vacia{margin:auto;color:var(--suave);font-size:.9rem;text-align:center;padding:10px}
+  .marco figcaption{text-align:center;margin-top:10px;font-family:'Bodoni Moda',Georgia,serif;font-style:italic;font-size:1.1rem}
+  .marco.esposos figcaption{font-size:1.4rem;color:var(--fucsia)}
+  .quitar{position:absolute;top:14px;right:14px;background:rgba(29,37,64,.85);color:#fff;border:0;border-radius:99px;padding:4px 11px;font-size:.8rem}
+  @media(max-width:620px){
+    .destacados{grid-template-columns:1fr 1fr;grid-template-areas:"esposos esposos" "hijos padrinos";align-items:start}
+    .marco.esposos .foto{aspect-ratio:4/3}
+  }
+
+  /* Administración */
+  .pie{text-align:center;margin-top:40px}
+  .pie button{background:none;border:0;color:var(--suave);font-size:.85rem;text-decoration:underline;padding:8px}
+  #barraAdmin{position:fixed;top:0;left:0;right:0;background:var(--fucsia);color:#fff;padding:9px 14px;font-size:.92rem;display:none;justify-content:space-between;align-items:center;gap:10px;z-index:8}
+  body.admin #barraAdmin{display:flex}
+  body.admin header{padding-top:84px}
+  #barraAdmin button{background:#fff;color:var(--fucsia);border:0;border-radius:99px;padding:5px 14px;font-weight:600}
+  body.admin .item{outline:2px dashed var(--oro);outline-offset:-3px}
+  .msg{color:var(--fucsia);min-height:1.4em;margin:8px 0;font-size:.92rem}
+  .lista-roles{display:grid;gap:8px;margin-top:12px}
+  .lista-roles button{border:2px solid var(--tinta);background:#fff;border-radius:10px;padding:12px;font-weight:600}
+  .lista-roles button:hover{background:var(--tinta);color:#fff}
+  .previa{width:100%;max-height:34vh;object-fit:contain;background:var(--linea);border-radius:6px;margin-top:12px}
+
   /* Visor */
   #visor{position:fixed;inset:0;background:rgba(10,14,28,.94);display:none;align-items:center;justify-content:center;z-index:20}
   #visor.abierto{display:flex}
@@ -84,10 +130,17 @@
   <p class="invita">Comparte tus fotos y videos de este día. Aparecen aquí apenas terminan de subirse.</p>
 </header>
 
+<section class="destacados" aria-label="Fotos destacadas">
+  <figure class="marco hijos" data-rol="hijos"><div class="foto"></div><figcaption>Nuestros hijos</figcaption></figure>
+  <figure class="marco esposos" data-rol="esposos"><div class="foto"></div><figcaption>Los esposos</figcaption></figure>
+  <figure class="marco padrinos" data-rol="padrinos"><div class="foto"></div><figcaption>Nuestros padrinos</figcaption></figure>
+</section>
+
 <main>
   <p class="contador" id="contador" aria-live="polite">Cargando recuerdos…</p>
   <div id="galeria"></div>
   <p class="vacio" id="vacio" hidden>Todavía no hay fotos. Sube la primera con el botón de abajo.</p>
+  <div class="pie"><button id="btnAdmin">Administrar fotos destacadas</button></div>
 </main>
 
 <button class="flotante" id="btnSubir">Subir fotos o videos</button>
@@ -110,6 +163,46 @@
   </div>
 </div>
 
+<!-- Bienvenida: edita el versículo y las palabras aquí -->
+<div class="fondo centro abierto" id="bienvenida" role="dialog" aria-modal="true" aria-labelledby="versiculo">
+  <div class="carta">
+    <div class="tejido" aria-hidden="true"></div>
+    <div class="bendicion">
+      <p>“Y Dios unió dos corazones que estaban destinados a encontrarse, dos almas que decidieron caminar juntas y dos vidas que, desde hoy, comienzan a escribir una misma historia bajo su bendición.</p>
+      <p>Que sea Él quien guíe cada uno de sus pasos, fortalezca su amor en los días difíciles y multiplique su alegría en cada bendición. Que su hogar sea siempre un refugio de fe, amor y esperanza, y que nunca olviden que, cuando Dios está en el centro, ningún camino se recorre en soledad.”</p>
+    </div>
+    <p class="versiculo" id="versiculo">“Lo que Dios ha unido, que no lo separe el hombre.”</p>
+    <p class="cita">Mateo 19:6</p>
+    <button class="entrar" id="btnEntrar">Ver nuestros recuerdos</button>
+  </div>
+</div>
+
+<div id="barraAdmin"><span>Modo administrador: toca una foto para destacarla</span><button id="btnSalirAdmin">Salir</button></div>
+
+<div class="fondo centro" id="panelClave" role="dialog" aria-modal="true" aria-labelledby="tClave">
+  <div class="panel">
+    <button class="cerrar" id="cerrarClave" aria-label="Cerrar">×</button>
+    <h2 id="tClave">Administrar</h2>
+    <input class="nombre" id="inClave" type="password" placeholder="Escribe la clave" autocomplete="current-password">
+    <p class="msg" id="msgClave" aria-live="polite"></p>
+    <div class="botones"><button class="entrar" id="btnClave" style="margin:0;grid-column:1/-1">Entrar</button></div>
+  </div>
+</div>
+
+<div class="fondo centro" id="panelAsignar" role="dialog" aria-modal="true" aria-labelledby="tAsignar">
+  <div class="panel">
+    <button class="cerrar" id="cerrarAsignar" aria-label="Cerrar">×</button>
+    <h2 id="tAsignar">¿Dónde destacar esta foto?</h2>
+    <img class="previa" id="previaAsignar" alt="">
+    <p class="msg" id="msgAsignar" aria-live="polite"></p>
+    <div class="lista-roles">
+      <button data-rol="esposos">Los esposos (centro)</button>
+      <button data-rol="hijos">Nuestros hijos</button>
+      <button data-rol="padrinos">Nuestros padrinos</button>
+    </div>
+  </div>
+</div>
+
 <div id="visor" role="dialog" aria-modal="true" aria-label="Visor">
   <button class="x" id="visorX" aria-label="Cerrar">×</button>
   <button class="nav ant" id="visorAnt" aria-label="Anterior">‹</button>
@@ -128,6 +221,9 @@ const $ = id => document.getElementById(id);
 const dormir = ms => new Promise(r => setTimeout(r, ms));
 const miniatura = (id, w) => `https://drive.google.com/thumbnail?id=${id}&sz=w${w}`;
 const esVideo = t => (t || '').startsWith('video/');
+
+// ====== ESTADO ======
+let admin = false, claveAdmin = '', destacados = {}, ultimoDest = '';
 
 // ====== GALERÍA ======
 const vistos = new Set();
@@ -156,7 +252,7 @@ function crearTarjeta(f, nueva) {
     p.className = 'play'; p.textContent = '▶ Video';
     b.appendChild(p);
   }
-  b.addEventListener('click', () => abrirVisor(f.id));
+  b.addEventListener('click', () => (admin ? abrirAsignar(f) : abrirVisor(f.id)));
   return b;
 }
 
@@ -165,6 +261,10 @@ async function actualizar() {
     const r = await fetch(SCRIPT_URL + '?action=list&t=' + Date.now());
     const j = await r.json();
     if (!j.ok) throw new Error(j.error);
+    if (j.destacados) {
+      const s = JSON.stringify(j.destacados);
+      if (s !== ultimoDest) { ultimoDest = s; destacados = j.destacados; pintarDestacados(); }
+    }
     const nuevos = j.files.filter(f => !vistos.has(f.id));
     const gal = $('galeria');
     if (primeraCarga) {
@@ -277,6 +377,108 @@ async function procesar() {
   subiendo = false;
 }
 window.addEventListener('beforeunload', e => { if (subiendo || pendientes.length) { e.preventDefault(); e.returnValue = ''; } });
+
+// ====== BIENVENIDA (aparece una vez por visita) ======
+(function () {
+  const b = $('bienvenida');
+  let ya = false;
+  try { ya = sessionStorage.getItem('bienvenida') === '1'; } catch (e) {}
+  if (ya) b.classList.remove('abierto');
+  $('btnEntrar').onclick = () => {
+    b.classList.remove('abierto');
+    try { sessionStorage.setItem('bienvenida', '1'); } catch (e) {}
+  };
+})();
+
+// ====== RECUADROS DESTACADOS ======
+const NOMBRES_ROL = { esposos: 'los esposos', hijos: 'nuestros hijos', padrinos: 'nuestros padrinos' };
+
+function pintarDestacados() {
+  Object.keys(NOMBRES_ROL).forEach(rol => {
+    const cont = document.querySelector(`.marco[data-rol="${rol}"] .foto`);
+    cont.innerHTML = '';
+    const id = destacados[rol];
+    if (id) {
+      const im = new Image();
+      im.alt = 'Foto de ' + NOMBRES_ROL[rol];
+      im.src = miniatura(id, 1000);
+      im.onclick = () => (admin ? null : abrirVisor(id));
+      cont.appendChild(im);
+      if (admin) {
+        const q = document.createElement('button');
+        q.className = 'quitar'; q.textContent = 'Quitar';
+        q.onclick = () => asignar(rol, '');
+        cont.appendChild(q);
+      }
+    } else {
+      const v = document.createElement('div');
+      v.className = 'vacia';
+      v.textContent = 'Aquí irá la foto de ' + NOMBRES_ROL[rol];
+      cont.appendChild(v);
+    }
+  });
+}
+pintarDestacados();
+
+// ====== MODO ADMINISTRADOR ======
+function abrirPanel(id) { $(id).classList.add('abierto'); }
+function cerrarPanel(id) { $(id).classList.remove('abierto'); }
+
+$('btnAdmin').onclick = () => { $('msgClave').textContent = ''; abrirPanel('panelClave'); $('inClave').focus(); };
+$('cerrarClave').onclick = () => cerrarPanel('panelClave');
+$('inClave').addEventListener('keydown', e => { if (e.key === 'Enter') $('btnClave').click(); });
+
+$('btnClave').onclick = async () => {
+  const clave = $('inClave').value;
+  if (!clave) { $('msgClave').textContent = 'Escribe la clave.'; return; }
+  $('msgClave').textContent = 'Verificando…';
+  try {
+    await api({ action: 'auth', clave });
+    claveAdmin = clave; admin = true;
+    document.body.classList.add('admin');
+    $('inClave').value = ''; $('msgClave').textContent = '';
+    cerrarPanel('panelClave');
+    pintarDestacados();
+    window.scrollTo({ top: 0 });
+  } catch (e) {
+    $('msgClave').textContent = e.message || 'No se pudo verificar la clave.';
+  }
+};
+
+$('btnSalirAdmin').onclick = () => {
+  admin = false; claveAdmin = '';
+  document.body.classList.remove('admin');
+  pintarDestacados();
+};
+
+let fotoElegida = null;
+function abrirAsignar(f) {
+  if (esVideo(f.type)) { alert('Solo se pueden destacar fotos, no videos.'); return; }
+  fotoElegida = f;
+  $('previaAsignar').src = miniatura(f.id, 800);
+  $('msgAsignar').textContent = '';
+  abrirPanel('panelAsignar');
+}
+$('cerrarAsignar').onclick = () => cerrarPanel('panelAsignar');
+document.querySelectorAll('#panelAsignar .lista-roles button').forEach(b => {
+  b.onclick = () => asignar(b.dataset.rol, fotoElegida && fotoElegida.id);
+});
+
+async function asignar(rol, id) {
+  const msg = $('msgAsignar');
+  msg.textContent = 'Guardando…';
+  try {
+    const r = await api({ action: 'destacar', clave: claveAdmin, rol, id: id || '' });
+    destacados = r.destacados || {};
+    ultimoDest = JSON.stringify(destacados);
+    pintarDestacados();
+    cerrarPanel('panelAsignar');
+    msg.textContent = '';
+  } catch (e) {
+    msg.textContent = e.message || 'No se pudo guardar.';
+    if (!$('panelAsignar').classList.contains('abierto')) alert(msg.textContent);
+  }
+}
 
 // ====== SUBIDA A DRIVE (por trozos) ======
 const TROZO_DIRECTO = 8 * 1024 * 1024;   // múltiplo de 256 KB
