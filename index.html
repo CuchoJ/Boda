@@ -1,615 +1,377 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Meliton &amp; Cristina — Comparte tus fotos</title>
+<title>Meliton &amp; Cristina · Nuestra boda</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script src="https://accounts.google.com/gsi/client" async defer></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;1,6..96,500&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ivory:#FAF6F0;
-    --ivory-2:#F1E9DF;
-    --rose:#C48B9F;
-    --rose-deep:#A9677D;
-    --sage:#8A9A7B;
-    --charcoal:#332E2B;
-    --gold:#B8935A;
+    --tinta:#1d2540; --fondo:#f5f6f9; --papel:#ffffff; --fucsia:#a3195b; --oro:#c49a3a;
+    --turquesa:#1f7a7a; --linea:#dfe2ea; --suave:#5d6580;
   }
-  *{box-sizing:border-box; margin:0; padding:0;}
-  body{
-    background:var(--ivory);
-    color:var(--charcoal);
-    font-family:'Jost', sans-serif;
-    font-weight:300;
-    line-height:1.6;
-  }
-  h1,h2,h3{
-    font-family:'Cormorant Garamond', serif;
-    font-weight:500;
-    letter-spacing:.01em;
-  }
-  a{color:inherit;}
+  *{box-sizing:border-box;margin:0}
+  html{scroll-behavior:smooth}
+  body{font-family:Figtree,system-ui,sans-serif;background:var(--fondo);color:var(--tinta);line-height:1.5;min-height:100vh}
+  button{font:inherit;cursor:pointer}
+  :focus-visible{outline:3px solid var(--fucsia);outline-offset:2px}
 
-  /* ---------- HERO ---------- */
-  .hero{
-    min-height:88vh;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    padding:6vh 6vw;
-    position:relative;
-    background:
-      radial-gradient(circle at 20% 20%, rgba(196,139,159,.14), transparent 45%),
-      radial-gradient(circle at 80% 75%, rgba(138,154,123,.14), transparent 45%),
-      var(--ivory);
-  }
-  .hero .eyebrow{
-    font-size:.95rem;
-    letter-spacing:.14em;
-    color:var(--rose-deep);
-    margin-bottom:1.4rem;
-    opacity:0;
-    animation:rise .9s ease forwards .1s;
-  }
-  .hero h1{
-    font-size:clamp(2.6rem, 7vw, 5.2rem);
-    font-style:italic;
-    color:var(--charcoal);
-    opacity:0;
-    animation:rise 1s ease forwards .3s;
-  }
-  .hero .amp{
-    display:inline-block;
-    color:var(--rose);
-    font-size:.7em;
-    margin:0 .15em;
-    font-style:normal;
-  }
-  .hero .date{
-    margin-top:1.6rem;
-    font-size:1.05rem;
-    color:#665f59;
-    opacity:0;
-    animation:rise 1s ease forwards .55s;
-  }
-  .hero .divider{
-    width:64px;
-    height:1px;
-    background:var(--gold);
-    margin:2rem auto;
-    opacity:0;
-    animation:rise 1s ease forwards .75s;
-  }
-  .hero p.lead{
-    max-width:480px;
-    font-size:1.05rem;
-    color:#544e49;
-    opacity:0;
-    animation:rise 1s ease forwards .9s;
-  }
-  @keyframes rise{
-    from{opacity:0; transform:translateY(14px);}
-    to{opacity:1; transform:translateY(0);}
-  }
+  header{padding:56px 20px 28px;text-align:center}
+  h1{font-family:'Bodoni Moda',Georgia,serif;font-weight:500;font-size:clamp(2.6rem,9vw,5.2rem);line-height:1.02;letter-spacing:-.01em}
+  h1 span{display:block;font-style:italic;font-size:.45em;color:var(--fucsia);margin:.15em 0}
+  .fecha{margin-top:18px;color:var(--suave);font-size:1.05rem}
+  .tejido{height:10px;margin:28px auto 0;max-width:420px;border-radius:2px;
+    background:linear-gradient(90deg,var(--fucsia) 0 20%,var(--oro) 20% 32%,var(--turquesa) 32% 52%,var(--tinta) 52% 62%,var(--fucsia) 62% 82%,var(--oro) 82% 100%)}
+  .invita{max-width:520px;margin:22px auto 0;color:var(--suave)}
 
-  /* ---------- BOTÓN SUBIR ---------- */
-  .upload-trigger{
-    margin-top:2.2rem;
-    background:var(--rose-deep);
-    color:#fff;
-    border:none;
-    padding:.85rem 2.2rem;
-    font-family:'Jost', sans-serif;
-    font-size:.95rem;
-    letter-spacing:.03em;
-    border-radius:3px;
-    cursor:pointer;
-    transition:background .2s;
-    opacity:0;
-    animation:rise 1s ease forwards 1.05s;
-  }
-  .upload-trigger:hover{ background:var(--charcoal); }
+  main{max-width:1180px;margin:0 auto;padding:8px 14px 120px}
+  .contador{margin:10px 4px 16px;color:var(--suave);font-size:.95rem}
+  #galeria{column-width:230px;column-gap:12px}
+  .item{break-inside:avoid;margin:0 0 12px;position:relative;border-radius:6px;overflow:hidden;background:var(--linea);cursor:pointer;border:0;padding:0;width:100%;display:block}
+  .item img{width:100%;display:block;min-height:90px;object-fit:cover}
+  .item.nueva{animation:entra .6s ease-out}
+  @keyframes entra{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
+  .play{position:absolute;right:8px;bottom:8px;background:rgba(29,37,64,.82);color:#fff;border-radius:99px;padding:3px 11px 3px 9px;font-size:.85rem}
+  .sinvista{display:grid;place-items:center;aspect-ratio:4/3;color:var(--suave);font-size:.9rem;padding:10px;text-align:center}
+  .vacio{text-align:center;color:var(--suave);padding:60px 20px}
 
-  .upload-fab{
-    position:fixed;
-    right:1.4rem;
-    bottom:1.4rem;
-    background:var(--rose-deep);
-    color:#fff;
-    border:none;
-    padding:.8rem 1.5rem;
-    font-family:'Jost', sans-serif;
-    font-size:.9rem;
-    border-radius:30px;
-    box-shadow:0 6px 18px rgba(51,46,43,.22);
-    cursor:pointer;
-    z-index:20;
-    transition:background .2s, transform .2s;
-  }
-  .upload-fab:hover{ background:var(--charcoal); transform:translateY(-1px); }
+  .flotante{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--fucsia);color:#fff;border:0;border-radius:99px;padding:15px 30px;font-weight:600;font-size:1.05rem;box-shadow:0 8px 24px rgba(163,25,91,.35);z-index:5}
 
-  /* ---------- MODAL ---------- */
-  .modal-overlay{
-    position:fixed; inset:0;
-    background:rgba(51,46,43,.5);
-    display:none;
-    align-items:flex-start;
-    justify-content:center;
-    padding:6vh 5vw;
-    overflow-y:auto;
-    z-index:50;
-  }
-  .modal-overlay.open{ display:flex; }
-  .modal{
-    background:var(--ivory);
-    border-radius:6px;
-    max-width:520px;
-    width:100%;
-    padding:2.6rem 2rem 2.4rem;
-    position:relative;
-    animation:rise .35s ease forwards;
-  }
-  .modal-close{
-    position:absolute;
-    top:1rem; right:1rem;
-    background:none;
-    border:none;
-    font-size:1.3rem;
-    color:#8a8177;
-    cursor:pointer;
-    line-height:1;
-    padding:.3rem;
-  }
-  .modal-close:hover{ color:var(--charcoal); }
-  .modal .section-title{ margin-top:0; }
+  /* Panel de subida */
+  .fondo{position:fixed;inset:0;background:rgba(29,37,64,.55);display:none;align-items:flex-end;justify-content:center;z-index:10}
+  .fondo.abierto{display:flex}
+  .panel{background:var(--papel);width:100%;max-width:520px;border-radius:14px 14px 0 0;padding:22px 20px 26px;max-height:92vh;overflow:auto}
+  @media(min-width:600px){.fondo{align-items:center}.panel{border-radius:14px}}
+  .panel h2{font-family:'Bodoni Moda',serif;font-weight:500;font-size:1.6rem}
+  .cerrar{float:right;background:none;border:0;font-size:1.6rem;color:var(--suave);line-height:1}
+  .nombre{width:100%;margin:14px 0;padding:12px;border:1px solid var(--linea);border-radius:8px;font:inherit}
+  .botones{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .botones label{display:block;text-align:center;border:2px solid var(--tinta);border-radius:10px;padding:16px 8px;font-weight:600;cursor:pointer}
+  .botones label:hover{background:var(--tinta);color:#fff}
+  .botones input{position:absolute;opacity:0;width:1px;height:1px}
+  .botones label:focus-within{outline:3px solid var(--fucsia);outline-offset:2px}
+  .aviso{font-size:.88rem;color:var(--suave);margin:12px 0}
+  .cola{list-style:none;padding:0;margin-top:8px}
+  .cola li{padding:10px 0;border-top:1px solid var(--linea);font-size:.92rem}
+  .cola .fila{display:flex;justify-content:space-between;gap:10px}
+  .cola .nom{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .barra{height:6px;background:var(--linea);border-radius:3px;margin-top:6px;overflow:hidden}
+  .barra i{display:block;height:100%;width:0;background:var(--turquesa);transition:width .25s}
+  .ok .barra i{background:var(--turquesa)} .error .barra i{background:var(--fucsia)}
+  .estado{color:var(--suave);white-space:nowrap}
+  .error .estado{color:var(--fucsia)}
 
-  /* ---------- SECTIONS ---------- */
-  section{
-    padding:5rem 6vw;
-    max-width:960px;
-    margin:0 auto;
-  }
-  .section-title{
-    text-align:center;
-    margin-bottom:.6rem;
-    font-size:clamp(1.8rem,4vw,2.6rem);
-  }
-  .section-sub{
-    text-align:center;
-    color:#6b6459;
-    max-width:440px;
-    margin:0 auto 2.8rem;
-    font-size:.98rem;
-  }
-
-  /* ---------- UPLOAD ---------- */
-  .upload-zone{
-    border:1.5px dashed var(--rose);
-    border-radius:4px;
-    background:#fff;
-    padding:3rem 2rem;
-    text-align:center;
-    cursor:pointer;
-    transition:border-color .25s, background .25s;
-  }
-  .upload-zone.drag{
-    border-color:var(--sage);
-    background:var(--ivory-2);
-  }
-  .upload-zone svg{ width:34px; height:34px; stroke:var(--rose-deep); margin-bottom:1rem;}
-  .upload-zone .label{ font-family:'Cormorant Garamond', serif; font-size:1.4rem; }
-  .upload-zone .hint{ font-size:.85rem; color:#8a8177; margin-top:.4rem; }
-  #file-input{ display:none; }
-
-  .name-field{
-    max-width:340px;
-    margin:1.6rem auto 0;
-  }
-  .name-field input{
-    width:100%;
-    padding:.7rem .9rem;
-    border:1px solid #ddd3c6;
-    border-radius:3px;
-    font-family:'Jost', sans-serif;
-    font-size:.95rem;
-    background:#fff;
-  }
-  .name-field input:focus{ outline:2px solid var(--sage); outline-offset:1px; }
-  .name-field label{
-    display:block;
-    font-size:.8rem;
-    color:#8a8177;
-    margin-bottom:.4rem;
-  }
-
-  .queue{
-    display:flex;
-    flex-wrap:wrap;
-    gap:.6rem;
-    margin-top:1.6rem;
-    justify-content:center;
-  }
-  .queue-item{
-    position:relative;
-    width:78px; height:78px;
-    border-radius:3px;
-    overflow:hidden;
-    background:#eee;
-  }
-  .queue-item img, .queue-item video{ width:100%; height:100%; object-fit:cover; display:block; }
-  .queue-item .video-tag{
-    position:absolute; bottom:4px; right:4px;
-    background:rgba(51,46,43,.7);
-    color:#fff;
-    font-size:.65rem;
-    padding:.1rem .35rem;
-    border-radius:2px;
-  }
-  .queue-item .status{
-    position:absolute; inset:0;
-    display:flex; align-items:center; justify-content:center;
-    background:rgba(51,46,43,.55);
-    color:#fff; font-size:.7rem;
-  }
-  .queue-item .status.done{ background:rgba(138,154,123,.75); }
-  .queue-item .status.error{ background:rgba(169,103,125,.85); }
-
-  .send-btn{
-    display:block;
-    margin:2rem auto 0;
-    background:var(--rose-deep);
-    color:#fff;
-    border:none;
-    padding:.85rem 2.4rem;
-    font-family:'Jost', sans-serif;
-    font-size:.95rem;
-    letter-spacing:.03em;
-    border-radius:3px;
-    cursor:pointer;
-    transition:background .2s, transform .2s;
-  }
-  .send-btn:hover{ background:var(--charcoal); }
-  .send-btn:disabled{ background:#cfc6ba; cursor:not-allowed; }
-
-  .status-msg{
-    text-align:center;
-    margin-top:1.2rem;
-    font-size:.9rem;
-    min-height:1.2em;
-  }
-  .status-msg.ok{ color:var(--sage); }
-  .status-msg.err{ color:var(--rose-deep); }
-
-  /* ---------- GALLERY ---------- */
-  .gallery-wrap{ background:var(--ivory-2); }
-  .gallery{
-    column-count:2;
-    column-gap:.7rem;
-  }
-  @media(min-width:640px){ .gallery{ column-count:3; } }
-  @media(min-width:960px){ .gallery{ column-count:4; } }
-  .gallery img{
-    width:100%;
-    display:block;
-    margin-bottom:.7rem;
-    border-radius:3px;
-    break-inside:avoid;
-    background:#e4dcd0;
-  }
-  .gallery .video-embed{
-    width:100%;
-    aspect-ratio:16/9;
-    display:block;
-    margin-bottom:.7rem;
-    border-radius:3px;
-    break-inside:avoid;
-    background:#000;
-    border:none;
-  }
-  .empty-state{
-    text-align:center;
-    color:#8a8177;
-    font-size:.95rem;
-    padding:2rem 0;
-  }
-
-  footer{
-    text-align:center;
-    padding:3rem 6vw 4rem;
-    font-family:'Cormorant Garamond', serif;
-    font-style:italic;
-    color:#a89d8d;
-    font-size:1.1rem;
-  }
-
-  @media (prefers-reduced-motion: reduce){
-    .hero *{ animation:none !important; opacity:1 !important; }
-  }
+  /* Visor */
+  #visor{position:fixed;inset:0;background:rgba(10,14,28,.94);display:none;align-items:center;justify-content:center;z-index:20}
+  #visor.abierto{display:flex}
+  #visor .contenido{max-width:96vw;max-height:90vh;display:flex}
+  #visor img{max-width:96vw;max-height:90vh;object-fit:contain}
+  #visor iframe{width:min(96vw,1000px);height:min(80vh,600px);border:0;background:#000}
+  .nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.14);color:#fff;border:0;width:46px;height:46px;border-radius:50%;font-size:1.5rem}
+  .nav.ant{left:12px}.nav.sig{right:12px}
+  #visor .x{position:absolute;top:14px;right:16px;background:none;border:0;color:#fff;font-size:2rem}
+  @media(prefers-reduced-motion:reduce){.item.nueva{animation:none}html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
 
-<div class="hero">
-  <div class="eyebrow">NOS CASAMOS</div>
-  <h1>Meliton <span class="amp">&amp;</span> Cristina</h1>
-  <div class="date">26 de septiembre de 2026</div>
-  <div class="divider"></div>
-  <p class="lead">Ayúdanos a guardar cada momento del día. Sube las fotos que tomes y aparecerán aquí, junto a las de todos.</p>
-  <button class="upload-trigger" id="open-modal-hero">Subir fotos</button>
-</div>
+<header>
+  <h1>Meliton <span>y</span> Cristina</h1>
+  <p class="fecha">26 de septiembre de 2026</p>
+  <div class="tejido" aria-hidden="true"></div>
+  <p class="invita">Comparte tus fotos y videos de este día. Aparecen aquí apenas terminan de subirse.</p>
+</header>
 
-<div class="gallery-wrap">
-  <section>
-    <h2 class="section-title">Momentos del día</h2>
-    <p class="section-sub">Actualiza la página para ver las fotos más recientes.</p>
-    <div class="gallery" id="gallery">
-      <div class="empty-state" id="empty-state">Todavía no hay fotos — ¡sé el primero en subir una!</div>
+<main>
+  <p class="contador" id="contador" aria-live="polite">Cargando recuerdos…</p>
+  <div id="galeria"></div>
+  <p class="vacio" id="vacio" hidden>Todavía no hay fotos. Sube la primera con el botón de abajo.</p>
+</main>
+
+<button class="flotante" id="btnSubir">Subir fotos o videos</button>
+
+<div class="fondo" id="fondo" role="dialog" aria-modal="true" aria-labelledby="tituloPanel">
+  <div class="panel">
+    <button class="cerrar" id="btnCerrar" aria-label="Cerrar">×</button>
+    <h2 id="tituloPanel">Sube tus recuerdos</h2>
+    <input class="nombre" id="invitado" type="text" maxlength="40" placeholder="Tu nombre (opcional)" autocomplete="name">
+    <div class="botones">
+      <label>Tomar foto o video
+        <input type="file" id="inCamara" accept="image/*,video/*" capture="environment">
+      </label>
+      <label>Elegir de mi galería
+        <input type="file" id="inGaleria" accept="image/*,video/*" multiple>
+      </label>
     </div>
-  </section>
-</div>
-
-<footer>Gracias por acompañarnos</footer>
-
-<button class="upload-fab" id="open-modal-fab">+ Subir fotos</button>
-
-<div class="modal-overlay" id="modal-overlay">
-  <div class="modal">
-    <button class="modal-close" id="modal-close" aria-label="Cerrar">✕</button>
-    <h2 class="section-title">Sube tus fotos y videos</h2>
-
-    <div id="signin-box">
-      <p class="section-sub">Inicia sesión con tu cuenta de Google para subir — así podemos aceptar videos largos sin problema.</p>
-      <button class="send-btn" id="google-signin-btn" type="button" style="display:block; margin:0 auto;">Iniciar sesión con Google</button>
-    </div>
-
-    <div id="upload-box" style="display:none;">
-      <p class="section-sub" id="signed-in-as"></p>
-
-      <div class="name-field">
-        <label for="uploader-name">Tu nombre (opcional)</label>
-        <input type="text" id="uploader-name" placeholder="¿Quién sube estas fotos?">
-      </div>
-
-      <div class="upload-zone" id="drop-zone">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 002 2h12a2 2 0 002-2v-3"/></svg>
-        <div class="label">Arrastra tus fotos o videos aquí</div>
-        <div class="hint">o toca para elegir desde tu galería</div>
-        <input type="file" id="file-input" accept="image/*,video/*" multiple>
-      </div>
-
-      <div class="queue" id="queue"></div>
-      <button class="send-btn" id="send-btn" disabled>Enviar fotos</button>
-      <div class="status-msg" id="status-msg"></div>
-    </div>
+    <p class="aviso">Los videos grandes tardan más. No cierres esta página hasta que cada archivo diga «Listo».</p>
+    <ul class="cola" id="cola"></ul>
   </div>
 </div>
 
+<div id="visor" role="dialog" aria-modal="true" aria-label="Visor">
+  <button class="x" id="visorX" aria-label="Cerrar">×</button>
+  <button class="nav ant" id="visorAnt" aria-label="Anterior">‹</button>
+  <div class="contenido" id="visorCont"></div>
+  <button class="nav sig" id="visorSig" aria-label="Siguiente">›</button>
+</div>
+
 <script>
-// URL de tu implementación de Apps Script
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzKB9wPlcN0ydEjrMLa6x0nf4NMKQ_B1TIOCsyf9uoVXCigJdoraXQOMsnKN9NSQPBgIw/exechttps://script.google.com/macros/s/AKfycbzKB9wPlcN0ydEjrMLa6x0nf4NMKQ_B1TIOCsyf9uoVXCigJdoraXQOMsnKN9NSQPBgIw/exec";
+// ====== CONFIGURACIÓN ======
+// Pega aquí la URL de tu aplicación web de Apps Script (termina en /exec)
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyqDr9VoTV2rDzOCcuqCCtGjgl_-LF0MHTMXYGSeMIJIWhexAk5FXi6gkX14IqXR-5xTg/exec';
+const SEGUNDOS_ACTUALIZAR = 12;
 
-// Pega aquí el Client ID que generes en Google Cloud Console
-const GOOGLE_CLIENT_ID = "798805555246-am7i14maaa468835agqj297gffpbe1cm.apps.googleusercontent.com";
-// El correo de Gmail dueño de la carpeta de Drive (el mismo con el que creaste el Apps Script)
-const OWNER_EMAIL = "lizbethccoytotapia@gmail.com";
-const DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.file";
-const MAX_SIZE = 1024 * 1024 * 1024; // 1GB por archivo (ajustable)
+// ====== UTILIDADES ======
+const $ = id => document.getElementById(id);
+const dormir = ms => new Promise(r => setTimeout(r, ms));
+const miniatura = (id, w) => `https://drive.google.com/thumbnail?id=${id}&sz=w${w}`;
+const esVideo = t => (t || '').startsWith('video/');
 
-let accessToken = null;
-let tokenClient = null;
+// ====== GALERÍA ======
+const vistos = new Set();
+let archivos = [];          // más nuevo primero
+let primeraCarga = true;
 
-function initGoogleAuth(){
-  if (!window.google || !google.accounts) { setTimeout(initGoogleAuth, 300); return; }
-  tokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: GOOGLE_CLIENT_ID,
-    scope: DRIVE_SCOPE,
-    callback: (resp) => {
-      if (resp.error) {
-        statusMsg.textContent = 'No se pudo iniciar sesión. Intenta de nuevo.';
-        statusMsg.className = 'status-msg err';
-        return;
-      }
-      accessToken = resp.access_token;
-      document.getElementById('signin-box').style.display = 'none';
-      document.getElementById('upload-box').style.display = 'block';
-    }
-  });
-}
-window.addEventListener('load', initGoogleAuth);
-
-document.getElementById('google-signin-btn').addEventListener('click', () => {
-  if (tokenClient) tokenClient.requestAccessToken({ prompt: 'consent' });
-});
-
-const dropZone = document.getElementById('drop-zone');
-const fileInput = document.getElementById('file-input');
-const queueEl = document.getElementById('queue');
-const sendBtn = document.getElementById('send-btn');
-const statusMsg = document.getElementById('status-msg');
-const galleryEl = document.getElementById('gallery');
-const emptyState = document.getElementById('empty-state');
-
-let queue = []; // {file, el}
-
-const modalOverlay = document.getElementById('modal-overlay');
-function openModal(){ modalOverlay.classList.add('open'); }
-function closeModal(){ modalOverlay.classList.remove('open'); }
-document.getElementById('open-modal-hero').addEventListener('click', openModal);
-document.getElementById('open-modal-fab').addEventListener('click', openModal);
-document.getElementById('modal-close').addEventListener('click', closeModal);
-modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModal(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-
-dropZone.addEventListener('click', () => fileInput.click());
-dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag'));
-dropZone.addEventListener('drop', e => {
-  e.preventDefault();
-  dropZone.classList.remove('drag');
-  addFiles(e.dataTransfer.files);
-});
-fileInput.addEventListener('change', () => addFiles(fileInput.files));
-
-function addFiles(fileList){
-  Array.from(fileList).forEach(file => {
-    const isImage = file.type.startsWith('image/');
-    const isVideo = file.type.startsWith('video/');
-    if (!isImage && !isVideo) return;
-    if (file.size > MAX_SIZE) {
-      statusMsg.textContent = '"' + file.name + '" pesa demasiado (máx. 1GB). Se omitió.';
-      statusMsg.className = 'status-msg err';
-      return;
-    }
-    const item = document.createElement('div');
-    item.className = 'queue-item';
-    if (isImage) {
-      const img = document.createElement('img');
-      img.src = URL.createObjectURL(file);
-      item.appendChild(img);
-    } else {
-      const video = document.createElement('video');
-      video.src = URL.createObjectURL(file);
-      video.muted = true;
-      item.appendChild(video);
-      const badge = document.createElement('div');
-      badge.className = 'video-tag';
-      badge.textContent = '▶';
-      item.appendChild(badge);
-    }
-    queueEl.appendChild(item);
-    queue.push({ file, el: item });
-  });
-  sendBtn.disabled = queue.length === 0;
-}
-
-sendBtn.addEventListener('click', async () => {
-  if (queue.length === 0 || !accessToken) return;
-  sendBtn.disabled = true;
-  statusMsg.textContent = 'Subiendo, esto puede tardar si hay videos…';
-  statusMsg.className = 'status-msg';
-
-  const name = document.getElementById('uploader-name').value.trim();
-  let okCount = 0, errCount = 0;
-
-  for (const item of queue) {
-    try {
-      const filename = (name ? name.replace(/[^a-z0-9]+/gi,'_') + '_' : '') + Date.now() + '_' + item.file.name;
-      const fileId = await uploadToDriveDirect(item.file, filename);
-      try { await shareWithOwner(fileId); } catch (shareErr) { console.warn('No se compartió (puede que ya seas el dueño):', shareErr); }
-      const json = await finalizeUpload(fileId);
-      markStatus(item.el, json.success);
-      if (json.success) { okCount++; } else { errCount++; console.error('Error al finalizar:', json.error); }
-    } catch (err) {
-      markStatus(item.el, false);
-      errCount++;
-      console.error('Error al subir:', err);
-    }
+function crearTarjeta(f, nueva) {
+  const b = document.createElement('button');
+  b.className = 'item' + (nueva ? ' nueva' : '');
+  b.setAttribute('aria-label', esVideo(f.type) ? 'Ver video' : 'Ver foto');
+  const img = new Image();
+  img.loading = 'lazy';
+  img.alt = '';
+  img.src = miniatura(f.id, 600);
+  let reintentos = 0;
+  img.onerror = () => {
+    if (reintentos++ < 3) { setTimeout(() => { img.src = miniatura(f.id, 600) + '&r=' + reintentos; }, 5000); return; }
+    const d = document.createElement('div');
+    d.className = 'sinvista';
+    d.textContent = esVideo(f.type) ? 'Video (se está procesando)' : 'Sin vista previa';
+    img.replaceWith(d);
+  };
+  b.appendChild(img);
+  if (esVideo(f.type)) {
+    const p = document.createElement('span');
+    p.className = 'play'; p.textContent = '▶ Video';
+    b.appendChild(p);
   }
-
-  if (errCount === 0) {
-    statusMsg.textContent = '¡Listo! ' + okCount + ' archivo(s) subidos. Gracias por compartir.';
-    statusMsg.className = 'status-msg ok';
-  } else {
-    statusMsg.textContent = okCount + ' subidos, ' + errCount + ' fallaron. Intenta de nuevo con esos.';
-    statusMsg.className = 'status-msg err';
-  }
-
-  queue = queue.filter(i => !i.el.classList.contains('sent-ok'));
-  sendBtn.disabled = true;
-  loadGallery();
-});
-
-// Sube el archivo directo a Google Drive con el token del invitado (sin límite de 50MB)
-async function uploadToDriveDirect(file, filename){
-  const initRes = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable', {
-    method: 'POST',
-    headers: {
-      'Authorization': 'Bearer ' + accessToken,
-      'Content-Type': 'application/json; charset=UTF-8'
-    },
-    body: JSON.stringify({ name: filename, mimeType: file.type || 'application/octet-stream' })
-  });
-  if (!initRes.ok) throw new Error('No se pudo iniciar la subida a Drive');
-  const uploadUrl = initRes.headers.get('Location');
-
-  const putRes = await fetch(uploadUrl, {
-    method: 'PUT',
-    headers: { 'Content-Type': file.type || 'application/octet-stream' },
-    body: file
-  });
-  if (!putRes.ok) throw new Error('No se pudo completar la subida a Drive');
-  const data = await putRes.json();
-  return data.id;
+  b.addEventListener('click', () => abrirVisor(f.id));
+  return b;
 }
 
-// Le da acceso al dueño de la boda sobre el archivo recién creado en Drive del invitado
-async function shareWithOwner(fileId){
-  const res = await fetch('https://www.googleapis.com/drive/v3/files/' + fileId + '/permissions', {
-    method: 'POST',
-    headers: {
-      'Authorization': 'Bearer ' + accessToken,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ role: 'writer', type: 'user', emailAddress: OWNER_EMAIL })
-  });
-  if (!res.ok) {
-    const errBody = await res.text();
-    throw new Error('No se pudo compartir con el dueño (' + OWNER_EMAIL + '): ' + errBody);
-  }
-}
-
-// Pide a Apps Script (con la autoridad del dueño) mover el archivo a la carpeta de la boda y hacerlo visible
-async function finalizeUpload(fileId){
-  const form = new FormData();
-  form.append('action', 'finalize');
-  form.append('fileId', fileId);
-  const res = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: form });
-  return res.json();
-}
-
-function markStatus(el, success){
-  const badge = document.createElement('div');
-  badge.className = 'status ' + (success ? 'done' : 'error');
-  badge.textContent = success ? '✓' : '✕';
-  el.appendChild(badge);
-  if (success) el.classList.add('sent-ok');
-}
-
-async function loadGallery(){
-  if (APPS_SCRIPT_URL.indexOf('PON_AQUI') === 0) return;
+async function actualizar() {
   try {
-    const res = await fetch(APPS_SCRIPT_URL);
-    const json = await res.json();
-    if (!json.images || json.images.length === 0) return;
-    emptyState.style.display = 'none';
-    galleryEl.innerHTML = '';
-    json.images.forEach(img => {
-      const isVideo = (img.mimeType || '').indexOf('video/') === 0;
-      let el;
-      if (isVideo) {
-        el = document.createElement('iframe');
-        el.className = 'video-embed';
-        el.src = 'https://drive.google.com/file/d/' + img.id + '/preview';
-        el.setAttribute('allow', 'autoplay');
-        el.setAttribute('frameborder', '0');
-      } else {
-        el = document.createElement('img');
-        el.src = img.url;
-        el.loading = 'lazy';
+    const r = await fetch(SCRIPT_URL + '?action=list&t=' + Date.now());
+    const j = await r.json();
+    if (!j.ok) throw new Error(j.error);
+    const nuevos = j.files.filter(f => !vistos.has(f.id));
+    const gal = $('galeria');
+    if (primeraCarga) {
+      nuevos.forEach(f => { vistos.add(f.id); gal.appendChild(crearTarjeta(f, false)); });
+    } else {
+      nuevos.slice().reverse().forEach(f => { vistos.add(f.id); gal.prepend(crearTarjeta(f, true)); });
+    }
+    if (nuevos.length) archivos = j.files.slice();
+    primeraCarga = false;
+    const n = vistos.size;
+    $('contador').textContent = n === 1 ? '1 recuerdo' : n + ' recuerdos';
+    $('vacio').hidden = n > 0;
+  } catch (e) {
+    $('contador').textContent = 'No se pudo cargar la galería. Reintentando…';
+  }
+}
+setInterval(() => { if (!document.hidden) actualizar(); }, SEGUNDOS_ACTUALIZAR * 1000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) actualizar(); });
+actualizar();
+
+// ====== VISOR ======
+let visorIdx = -1;
+function abrirVisor(id) {
+  visorIdx = archivos.findIndex(f => f.id === id);
+  if (visorIdx < 0) return;
+  mostrarVisor();
+  $('visor').classList.add('abierto');
+}
+function mostrarVisor() {
+  const f = archivos[visorIdx];
+  const c = $('visorCont');
+  c.innerHTML = '';
+  if (esVideo(f.type)) {
+    const fr = document.createElement('iframe');
+    fr.src = `https://drive.google.com/file/d/${f.id}/preview`;
+    fr.allow = 'autoplay; fullscreen';
+    fr.allowFullscreen = true;
+    c.appendChild(fr);
+  } else {
+    const im = new Image();
+    im.alt = '';
+    im.src = miniatura(f.id, 2000);
+    c.appendChild(im);
+  }
+}
+function cerrarVisor() { $('visor').classList.remove('abierto'); $('visorCont').innerHTML = ''; }
+function mover(d) {
+  if (!archivos.length) return;
+  visorIdx = (visorIdx + d + archivos.length) % archivos.length;
+  mostrarVisor();
+}
+$('visorX').onclick = cerrarVisor;
+$('visorAnt').onclick = () => mover(1);   // hacia las más antiguas
+$('visorSig').onclick = () => mover(-1);
+$('visor').addEventListener('click', e => { if (e.target.id === 'visor') cerrarVisor(); });
+document.addEventListener('keydown', e => {
+  if (!$('visor').classList.contains('abierto')) return;
+  if (e.key === 'Escape') cerrarVisor();
+  if (e.key === 'ArrowLeft') mover(1);
+  if (e.key === 'ArrowRight') mover(-1);
+});
+
+// ====== PANEL DE SUBIDA ======
+$('btnSubir').onclick = () => { $('fondo').classList.add('abierto'); $('btnCerrar').focus(); };
+$('btnCerrar').onclick = () => $('fondo').classList.remove('abierto');
+$('fondo').addEventListener('click', e => { if (e.target.id === 'fondo') $('fondo').classList.remove('abierto'); });
+
+$('inCamara').onchange = e => { encolar(e.target.files); e.target.value = ''; };
+$('inGaleria').onchange = e => { encolar(e.target.files); e.target.value = ''; };
+
+const pendientes = [];
+let subiendo = false;
+
+function adivinarMime(f) {
+  if (f.type) return f.type;
+  const ext = (f.name.split('.').pop() || '').toLowerCase();
+  const videos = { mp4: 'video/mp4', mov: 'video/quicktime', m4v: 'video/mp4', webm: 'video/webm', '3gp': 'video/3gpp', avi: 'video/x-msvideo', mkv: 'video/x-matroska' };
+  const imgs = { jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', gif: 'image/gif', webp: 'image/webp', heic: 'image/heic', heif: 'image/heif' };
+  return videos[ext] || imgs[ext] || '';
+}
+const fmt = b => b >= 1048576 ? (b / 1048576).toFixed(b >= 10485760 ? 0 : 1) + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB';
+
+function encolar(lista) {
+  for (const file of lista) {
+    const li = document.createElement('li');
+    li.innerHTML = '<div class="fila"><span class="nom"></span><span class="estado">En espera</span></div><div class="barra"><i></i></div>';
+    li.querySelector('.nom').textContent = file.name + ' (' + fmt(file.size) + ')';
+    $('cola').prepend(li);
+    pendientes.push({ file, li });
+  }
+  procesar();
+}
+
+async function procesar() {
+  if (subiendo) return;
+  subiendo = true;
+  while (pendientes.length) {
+    const it = pendientes.shift();
+    const estado = it.li.querySelector('.estado');
+    const barra = it.li.querySelector('.barra i');
+    try {
+      estado.textContent = '0%';
+      await subirArchivo(it.file, p => { barra.style.width = (p * 100) + '%'; estado.textContent = Math.floor(p * 100) + '%'; });
+      barra.style.width = '100%'; estado.textContent = 'Listo'; it.li.classList.add('ok');
+      setTimeout(actualizar, 2500);
+    } catch (e) {
+      estado.textContent = 'Error: ' + (e.message || 'no se pudo subir'); it.li.classList.add('error');
+    }
+  }
+  subiendo = false;
+}
+window.addEventListener('beforeunload', e => { if (subiendo || pendientes.length) { e.preventDefault(); e.returnValue = ''; } });
+
+// ====== SUBIDA A DRIVE (por trozos) ======
+const TROZO_DIRECTO = 8 * 1024 * 1024;   // múltiplo de 256 KB
+const TROZO_PROXY = 3 * 1024 * 1024;     // múltiplo de 256 KB
+let modoDirecto = true;                  // si falla, pasa solo al plan B
+
+async function api(cuerpo) {
+  const r = await fetch(SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(cuerpo) });
+  const j = await r.json();
+  if (!j.ok) throw new Error(j.error || 'Error del servidor');
+  return j;
+}
+
+function aBase64(blob) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(String(r.result).split(',')[1]);
+    r.onerror = () => rej(new Error('No se pudo leer el archivo'));
+    r.readAsDataURL(blob);
+  });
+}
+
+function putDirecto(sesion, blob, inicio, total, progreso) {
+  return new Promise((resolve, reject) => {
+    const x = new XMLHttpRequest();
+    x.open('PUT', sesion);
+    x.setRequestHeader('Content-Range', `bytes ${inicio}-${inicio + blob.size - 1}/${total}`);
+    x.upload.onprogress = ev => progreso(ev.loaded);
+    x.onload = () => {
+      if (x.status === 308) resolve(false);
+      else if (x.status === 200 || x.status === 201) resolve(true);
+      else reject(new Error('HTTP ' + x.status));
+    };
+    x.onerror = () => reject(Object.assign(new Error('Sin conexión'), { red: true }));
+    x.send(blob);
+  });
+}
+
+async function subirArchivo(file, onProgreso) {
+  const mime = adivinarMime(file);
+  if (!/^(image|video)\//.test(mime)) throw new Error('Solo fotos y videos');
+  const total = file.size;
+  const prefijo = ($('invitado').value.trim().replace(/[^\p{L}\p{N} ._-]/gu, '') || '').slice(0, 30);
+  const nombre = (prefijo ? prefijo + '__' : '') + file.name;
+
+  const { session } = await api({ action: 'init', name: nombre, mime, size: total, origin: location.origin });
+
+  let inicio = 0;
+  while (inicio < total) {
+    const tam = modoDirecto ? TROZO_DIRECTO : TROZO_PROXY;
+    const fin = Math.min(inicio + tam, total);
+    const blob = file.slice(inicio, fin);
+    let intentos = 0;
+    for (;;) {
+      try {
+        if (modoDirecto) {
+          await putDirecto(session, blob, inicio, total, n => onProgreso((inicio + n) / total));
+        } else {
+          await api({ action: 'chunk', session, start: inicio, total, mime, data: await aBase64(blob) });
+        }
+        break;
+      } catch (e) {
+        // Primer intento directo bloqueado por el navegador: usar el plan B (sin perder la sesión)
+        if (modoDirecto && e.red && inicio === 0 && intentos === 0) {
+          modoDirecto = false;
+          return continuarProxy(session, file, mime, total, onProgreso);
+        }
+        if (++intentos > 4) throw e;
+        await dormir(1500 * intentos);
       }
-      el.alt = img.name || 'Foto de la boda';
-      galleryEl.appendChild(el);
-    });
-  } catch (err) {
-    // Si falla, se mantiene el estado vacío
+    }
+    inicio = fin;
+    onProgreso(inicio / total);
   }
 }
 
-loadGallery();
+async function continuarProxy(session, file, mime, total, onProgreso) {
+  let inicio = 0;
+  while (inicio < total) {
+    const fin = Math.min(inicio + TROZO_PROXY, total);
+    const blob = file.slice(inicio, fin);
+    let intentos = 0;
+    for (;;) {
+      try {
+        await api({ action: 'chunk', session, start: inicio, total, mime, data: await aBase64(blob) });
+        break;
+      } catch (e) {
+        if (++intentos > 4) throw e;
+        await dormir(1500 * intentos);
+      }
+    }
+    inicio = fin;
+    onProgreso(inicio / total);
+  }
+}
 </script>
 </body>
 </html>
